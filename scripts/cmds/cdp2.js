@@ -2,8 +2,8 @@ const axios = require("axios");
 
 module.exports = {
   config: {
-    name: "cdp",
-    aliases: ["coupledp"],
+    name: "cdp2",
+    aliases: ["coupledp2"],
     version: "1.0",
     author: "Christus x Aesther",
     countDown: 5,
