@@ -1,7 +1,7 @@
 const fsp = require('fs').promises;
 
 module.exports.config = {
-  name: "file",
+  name: "file2",
   version: "1.0.0",
   role: 2,
   author: "Christus",
