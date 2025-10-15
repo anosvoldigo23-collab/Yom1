@@ -1,91 +1,66 @@
-const { getPrefix } = global.utils;
-const { commands } = global.GoatBot;
-
 module.exports = {
   config: {
     name: "help",
-    version: "3.5",
-    author: "Mostakim",
-    usePrefix: false,
+    aliases: ["commands"],
+    version: "0.0.1",
+    author: "Christus",
+    countDown: 2,
     role: 0,
-    category: "info",
-    priority: 1
+    category: "utility"
   },
 
-  onStart: async function ({ message, args, event, threadsData, role }) {
-    const prefix = getPrefix(event.threadID);
-    const arg = args[0]?.toLowerCase();
+  onStart: async function ({ message, args, commandName }) {
+    const cmds = global.GoatBot.commands;
+    if (!cmds) return message.reply("Command collection is not available.");
 
-    const header = "╔═━「 𝐇𝐄𝐋𝐏 𝐌𝐄𝐍𝐔 」━═╗";
-    const footer = "╚═━──────────────━═╝";
-
-    if (!arg) {
-      const list = Array.from(commands.entries())
-        .filter(([_, cmd]) => cmd.config?.role <= role)
-        .map(([name]) => `┃ ✦ ${name}`)
-        .join("\n");
-
-      return message.reply(
-        `${header}\n` +
-        `┃ 🔑 Prefix: ${prefix}\n` +
-        `┃ 📂 Total Commands: ${commands.size}\n` +
-        `┃ ⚙️ Available Commands:\n` +
-        `${list}\n` +
-        `${footer}\n` +
-        `\n📌 Use \`${prefix}help -<category>\` to filter by category\n` +
-        `📌 Use \`${prefix}help <command>\` to see command info`
+    if (args.length) {
+      const q = args[0].toLowerCase();
+      const cmd = [...cmds.values()].find(
+        c => c.config.name === q || (c.config.aliases && c.config.aliases.includes(q))
       );
+      if (!cmd) return message.reply(`No command called “${q}”.`);
+      const i = cmd.config;
+      const detail = `
+╭─────────────────────◊
+│ ▸ Command: ${i.name}
+│ ▸ Aliases: ${i.aliases?.length ? i.aliases.join(", ") : "None"}
+│ ▸ Can use: ${i.role === 2 ? "Admin Only" : i.role === 1 ? "VIP Only" : "All Users"}
+│ ▸ Category: ${i.category?.toUpperCase() || "NIX"}
+│ ▸ PrefixEnabled?: ${i.prefix === false ? "False" : "True"}
+│ ▸ Author: ${i.author || "Unknown"}
+│ ▸ Version: ${i.version || "N/A"}
+╰─────────────────────◊
+      `.trim();
+      return message.reply(detail);
     }
 
-    if (arg === "-c" && args[1]) {
-      const cmdName = args[1].toLowerCase();
-      const cmd = commands.get(cmdName) || commands.get(global.GoatBot.aliases.get(cmdName));
+    const cats = {};
+    [...cmds.values()]
+      .filter((c, i, s) => i === s.findIndex(x => x.config.name === c.config.name))
+      .forEach(c => {
+        const cat = c.config.category || "UNCATEGORIZED";
+        if (!cats[cat]) cats[cat] = [];
+        if (!cats[cat].includes(c.config.name)) cats[cat].push(c.config.name);
+      });
 
-      if (!cmd || cmd.config.role > role)
-        return message.reply(`✘ Command "${cmdName}" not found or access denied.`);
+    let msg = "";
+    Object.keys(cats).sort().forEach(cat => {
+      msg += `╭─────『 ${cat.toUpperCase()} 』\n`;
+      cats[cat].sort().forEach(n => {
+        msg += `│ ▸ ${n}\n`;
+      });
+      msg += `╰──────────────\n`;
+    });
 
-      return message.reply(
-        `${header}\n` +
-        `┃ ✦ Command: ${cmdName}\n` +
-        `┃ ✦ Category: ${cmd.config.category || "Uncategorized"}\n` +
-        `${footer}`
-      );
-    }
+    msg += `
+╭──────────────◊
+│ » Total commands: ${cmds.size}
+│ » A Powerful GoatBot
+│ » 𝐶𝐻𝑅𝐼𝑆𝑇𝑈𝑆
+╰──────────◊
+「 𝗖𝗛𝗥𝗜𝗦𝗧𝗨𝗦 𝗕𝗢𝗧 」
+    `.trim();
 
-    if (arg.startsWith("-")) {
-      const category = arg.slice(1).toLowerCase();
-      const matched = Array.from(commands.entries())
-        .filter(([_, cmd]) => cmd.config?.category?.toLowerCase() === category && cmd.config.role <= role)
-        .map(([name]) => `┃ ✦ ${name}`);
-
-      if (matched.length === 0)
-        return message.reply(`✘ No commands found under "${category}".`);
-
-      return message.reply(
-        `╔═━「 𝐂𝐀𝐓𝐄𝐆𝐎𝐑𝐘: ${category.toUpperCase()} 」━═╗\n` +
-        `${matched.join("\n")}\n` +
-        `${footer}\n` +
-        `\n📌 Try: \`${prefix}help <command>\` to view details`
-      );
-    }
-
-    const cmd = commands.get(arg) || commands.get(global.GoatBot.aliases.get(arg));
-
-    if (!cmd || cmd.config.role > role)
-      return message.reply(`✘ Command "${arg}" not found.`);
-
-    const info = cmd.config;
-    const guide = info.guide?.en || "No usage info.";
-    const desc = info.longDescription?.en || "No description.";
-
-    return message.reply(
-      `╔═━「 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐃𝐄𝐓𝐀𝐈𝐋𝐒 」━═╗\n` +
-      `┃ ✦ Name: ${info.name}\n` +
-      `┃ ✦ Description: ${desc}\n` +
-      `┃ ✦ Usage: ${guide.replace(/{p}/g, prefix).replace(/{n}/g, info.name)}\n` +
-      `┃ ✦ Role: ${info.role}\n` +
-      `┃ ✦ Category: ${info.category || "Uncategorized"}\n` +
-      `${footer}`
-    );
+    await message.reply(msg);
   }
 };
