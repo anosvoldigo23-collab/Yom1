@@ -6,8 +6,8 @@ const CACHE_DIR = path.join(__dirname, "cache");
 
 module.exports = {
   config: {
-    name: "4k",
-    aliases: ["upscale"],
+    name: "4k2",
+    aliases: ["upscale2"],
     version: "1.0",
     author: "Christus x Aesther",
     countDown: 5,
