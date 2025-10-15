@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
   config: {
-    name: "lyrics",
+    name: "lyrics2",
     version: "1.2",
     author: "Christus x Aesther",
     countDown: 5,
