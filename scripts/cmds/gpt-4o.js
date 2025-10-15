@@ -3,7 +3,7 @@ const axios = require("axios");
 module.exports = {
   config: {
     name: "gpt",
-    aliases: ["chatgpt", "ai"],
+    aliases: ["chatg", "g"],
     version: "1.0",
     author: "Christus x Aesther",
     countDown: 10, // Cooldown for API calls
