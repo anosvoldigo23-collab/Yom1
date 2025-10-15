@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
   config: {
-    name: "htv",
+    name: "htv2",
     version: "1.0",
     author: "Aesther x Christus",
     countDown: 5,
