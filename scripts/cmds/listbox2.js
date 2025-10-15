@@ -1,6 +1,6 @@
 module.exports = {
   config: {
-    name: "listbox",
+    name: "listbox2",
     version: "1.0.0",
     author: "Christus x Aesther",
     role: 2,
