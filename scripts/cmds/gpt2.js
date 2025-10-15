@@ -2,8 +2,8 @@ const axios = require("axios");
 
 module.exports = {
   config: {
-    name: "gpt",
-    aliases: ["chatgpt"],
+    name: "gpt2",
+    aliases: ["chatgpt2"],
     version: "1.4",
     author: "Christus x Aesther",
     countDown: 0,
