@@ -3,7 +3,7 @@ const axios = require("axios");
 module.exports = {
   config: {
     name: "gpt5",
-    aliases: ["gpt", "chatgpt", "gpt5"],
+    aliases: ["gpt5", "chatgpt5"],
     version: "1.2",
     author: "Christus x Aesther",
     countDown: 5,
